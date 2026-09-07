@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Multiple Pages Per Sheet – 2, 4, 6, 9 Layout Guide | LowCostPDF.xyz</title>
+  <meta name="description" content="Compare 2, 4, 6, 9 & 16 pages per sheet PDF layouts. Find the best layout for student notes, office docs & handouts. Free tool, no upload, works in browser.">
+  <meta name="keywords" content="pdf multiple pages per sheet, pdf pages per sheet, 2 pages per sheet pdf, 4 pages per sheet pdf, 6 pages per sheet, print multiple pages one sheet, n-up printing">
+  <link rel="canonical" href="https://www.lowcostpdf.xyz/pdf-pages-per-sheet.html">
+
+  <meta property="og:title" content="PDF Multiple Pages Per Sheet – Layout Comparison Guide">
+  <meta property="og:description" content="Which N-up layout is right for your PDF? Compare 2, 4, 6, 9 pages per sheet. Free tool at LowCostPDF.xyz.">
+  <meta property="og:url" content="https://www.lowcostpdf.xyz/pdf-pages-per-sheet.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://www.lowcostpdf.xyz/Gemini_generated.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PDF Multiple Pages Per Sheet – Which Layout is Right for You?",
+    "description": "A complete guide to printing multiple PDF pages on one sheet. Covers 2, 4, 6, 9, and 16 pages per sheet layouts with recommendations for students and offices.",
+    "author": { "@type": "Organization", "name": "LowCostPDF.xyz" },
+    "publisher": { "@type": "Organization", "name": "LowCostPDF.xyz", "url": "https://www.lowcostpdf.xyz" },
+    "datePublished": "2026-05-08",
+    "mainEntityOfPage": "https://www.lowcostpdf.xyz/pdf-pages-per-sheet.html"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How many pages per sheet should I print for PDF notes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For most student notes and lecture slides, 4 pages per sheet is the sweet spot. Text is still readable and you save 75% of paper. If your PDF has large diagrams or small text, use 2 pages per sheet instead."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is N-up printing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "N-up printing means placing N pages of a document onto a single printed sheet. For example, 4-up printing puts 4 pages on one sheet, reducing paper use by 75%."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1e4d7b;
+      --accent: #3aaa5c;
+      --accent2: #e8f5ee;
+      --bg: #f4f8fb;
+      --surface: #ffffff;
+      --text: #1a2e3b;
+      --muted: #4a6b80;
+      --border: #d0e4f0;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(30,77,123,.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.7;
+    }
+    nav {
+      background: rgba(255,255,255,.9); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-brand { font-weight: 900; font-size: 19px; color: var(--primary); text-decoration: none; }
+    .nav-cta {
+      background: var(--primary); color: #fff;
+      padding: 8px 20px; border-radius: 999px; font-weight: 700; font-size: 14px; text-decoration: none;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(160deg, #0d2d50 0%, #1e4d7b 50%, #245f95 100%);
+      color: #fff; padding: 64px 24px 72px; text-align: center;
+    }
+    .breadcrumb { font-size: 13px; opacity: .65; margin-bottom: 16px; }
+    .breadcrumb a { color: #fff; text-decoration: none; }
+    .page-header h1 { font-size: clamp(26px, 4.5vw, 46px); font-weight: 900; line-height: 1.2; margin-bottom: 14px; }
+    .page-header h1 strong { color: #7effa0; }
+    .page-header p { font-size: 16px; opacity: .82; max-width: 580px; margin: 0 auto; }
+
+    /* LAYOUT CARDS */
+    .layouts-section { max-width: 960px; margin: -36px auto 0; padding: 0 24px; position: relative; z-index: 5; }
+    .layouts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .layout-card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 2px solid var(--border); box-shadow: var(--shadow);
+      padding: 24px; transition: border-color .2s, transform .2s;
+      position: relative; overflow: hidden;
+    }
+    .layout-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .layout-card.recommended { border-color: var(--accent); }
+    .rec-badge {
+      position: absolute; top: 0; right: 0;
+      background: var(--accent); color: #fff;
+      font-size: 11px; font-weight: 800; padding: 4px 12px;
+      border-radius: 0 var(--radius) 0 var(--radius);
+    }
+    .layout-visual {
+      display: grid; gap: 4px; margin-bottom: 16px;
+      width: 80px;
+    }
+    .layout-visual.g2 { grid-template-columns: 1fr 1fr; width: 80px; }
+    .layout-visual.g4 { grid-template-columns: 1fr 1fr; width: 80px; }
+    .layout-visual.g6 { grid-template-columns: 1fr 1fr 1fr; width: 90px; }
+    .layout-visual.g9 { grid-template-columns: 1fr 1fr 1fr; width: 90px; }
+    .layout-visual.g16 { grid-template-columns: 1fr 1fr 1fr 1fr; width: 96px; }
+    .mini-page {
+      background: #e8f0f8; border: 1px solid #b8d0e8;
+      border-radius: 3px; aspect-ratio: .707;
+    }
+    .layout-card h2 { font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 4px; }
+    .layout-card .saving {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; margin-bottom: 12px;
+      background: var(--accent2); color: #1a6b35;
+    }
+    .layout-card p { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+    .layout-card .bn { font-family: 'Noto Sans Bengali', sans-serif; font-size: 12px; color: var(--muted); }
+    .layout-cta {
+      display: block; text-align: center;
+      background: var(--primary); color: #fff;
+      padding: 9px 0; border-radius: 999px;
+      font-weight: 800; font-size: 13px; text-decoration: none;
+      margin-top: 12px;
+    }
+    .layout-cta:hover { background: #2563ae; }
+
+    /* COMPARISON TABLE */
+    .section { max-width: 960px; margin: 60px auto; padding: 0 24px; }
+    .section h2 { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+    .section .lead { font-size: 15px; color: var(--muted); margin-bottom: 28px; }
+    .comp-table { width: 100%; border-collapse: collapse; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .comp-table th { background: var(--primary); color: #fff; padding: 14px 18px; text-align: left; font-size: 14px; font-weight: 800; }
+    .comp-table td { padding: 14px 18px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table tr:nth-child(even) td { background: #f7fbfe; }
+    .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+    .pill-green { background: #d4f0df; color: #1a6b35; }
+    .pill-blue { background: #ddeeff; color: #1e4d7b; }
+    .pill-orange { background: #fff0e0; color: #a85500; }
+
+    /* ARTICLE CONTENT */
+    .article { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+    .article h2 { font-size: 22px; font-weight: 900; color: var(--primary); margin: 40px 0 10px; }
+    .article h3 { font-size: 18px; font-weight: 800; color: var(--primary); margin: 24px 0 8px; }
+    .article p { font-size: 15px; color: var(--text); margin-bottom: 14px; }
+    .article ul { padding-left: 22px; margin-bottom: 14px; }
+    .article li { font-size: 15px; color: var(--text); margin-bottom: 6px; }
+    .tip-box {
+      background: var(--accent2); border: 1.5px solid var(--accent);
+      border-radius: var(--radius); padding: 20px 24px; margin: 24px 0;
+    }
+    .tip-box strong { color: #1a6b35; }
+
+    /* FAQ */
+    .faq-wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+    details { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    summary { padding: 17px 22px; font-weight: 800; font-size: 15px; color: var(--primary); cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+    summary::after { content: '+'; font-size: 22px; color: var(--muted); font-weight: 400; }
+    details[open] summary::after { content: '−'; }
+    details p { padding: 0 22px 17px; font-size: 14px; color: var(--muted); }
+
+    /* CTA */
+    .cta-strip {
+      background: linear-gradient(135deg, var(--primary), #2563ae);
+      color: #fff; text-align: center; padding: 56px 24px; margin: 60px 0 0;
+    }
+    .cta-strip h2 { font-size: 28px; font-weight: 900; margin-bottom: 10px; }
+    .cta-strip p { opacity: .85; margin-bottom: 24px; font-size: 15px; max-width: 480px; margin-inline: auto; }
+    .btn-white { display: inline-block; background: #fff; color: var(--primary); padding: 14px 36px; border-radius: 999px; font-weight: 900; font-size: 16px; text-decoration: none; }
+
+    footer { background: #0d2d50; color: rgba(255,255,255,.65); text-align: center; padding: 28px 20px; font-size: 13px; }
+    footer a { color: #7ecfff; text-decoration: none; margin: 0 8px; }
+
+    @media (max-width: 600px) { nav { padding: 12px 16px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">LowCostPDF.xyz</a>
+  <a href="/" class="nav-cta">⚡ Try Free Now</a>
+</nav>
+
+<header class="page-header">
+  <p class="breadcrumb"><a href="/">Home</a> › PDF Printing Layouts</p>
+  <h1>Print <strong>Multiple Pages Per Sheet</strong><br>from Your PDF</h1>
+  <p>Compare 2, 4, 6, 9 & 16 pages per sheet. Pick the right layout for your notes, handouts, and documents.</p>
+</header>
+
+<!-- LAYOUT CARDS -->
+<div class="layouts-section">
+  <div class="layouts-grid">
+
+    <div class="layout-card">
+      <div class="layout-visual g2">
+        <div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div>
+      </div>
+      <h2>2 Pages / Sheet</h2>
+      <span class="saving">💾 Saves 50% paper</span>
+      <p>Two pages side by side. Text is large and easy to read. Best for detailed content, diagrams, or dense text.</p>
+      <p class="bn">২টি পেজ পাশাপাশি। বিস্তারিত কন্টেন্ট ও ডায়াগ্রামের জন্য উপযুক্ত।</p>
+      <a href="/" class="layout-cta">Use 2-Up Layout →</a>
+    </div>
+
+    <div class="layout-card recommended">
+      <div class="rec-badge">⭐ Most Popular</div>
+      <div class="layout-visual g4">
+        <div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div>
+      </div>
+      <h2>4 Pages / Sheet</h2>
+      <span class="saving">💾 Saves 75% paper</span>
+      <p>The sweet spot. Four pages in a 2×2 grid. Readable text with massive paper savings. Ideal for student notes and lecture PDFs.</p>
+      <p class="bn">স্কুল, কলেজ ও বিশ্ববিদ্যালয়ের নোটের জন্য সেরা পছন্দ।</p>
+      <a href="/" class="layout-cta">Use 4-Up Layout →</a>
+    </div>
+
+    <div class="layout-card">
+      <div class="layout-visual g6">
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+      </div>
+      <h2>6 Pages / Sheet</h2>
+      <span class="saving">💾 Saves ~83% paper</span>
+      <p>Three columns, two rows. Great for slide-deck handouts where visuals are simple and clear.</p>
+      <p class="bn">স্লাইড হ্যান্ডআউটের জন্য ভালো যেখানে ভিজুয়াল সহজ।</p>
+      <a href="/" class="layout-cta">Use 6-Up Layout →</a>
+    </div>
+
+    <div class="layout-card">
+      <div class="layout-visual g9">
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+      </div>
+      <h2>9 Pages / Sheet</h2>
+      <span class="saving">💾 Saves ~89% paper</span>
+      <p>Very compact. 3×3 grid. Suitable for reference sheets, quick previews, and image-heavy slides where text size is less critical.</p>
+      <p class="bn">রেফারেন্স শিট ও ছবি-সমৃদ্ধ স্লাইডের জন্য ব্যবহারযোগ্য।</p>
+      <a href="/" class="layout-cta">Use 9-Up Layout →</a>
+    </div>
+
+    <div class="layout-card">
+      <div class="layout-visual g16">
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+        <div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div><div class="mini-page"></div>
+      </div>
+      <h2>16 Pages / Sheet</h2>
+      <span class="saving">💾 Saves ~94% paper</span>
+      <p>Extreme density. 4×4 grid. Best for bookmarks, visual overviews, or when you only need a rough paper record.</p>
+      <p class="bn">বুকমার্ক, ভিজ্যুয়াল ওভারভিউ বা রাফ কপির জন্য।</p>
+      <a href="/" class="layout-cta">Use 16-Up Layout →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE -->
+<div class="section">
+  <h2>Layout Comparison at a Glance</h2>
+  <p class="lead">Pick the best N-up setting for your printing need</p>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Layout</th>
+        <th>Grid</th>
+        <th>Paper Saved</th>
+        <th>Text Readability</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>2-up</strong></td>
+        <td>1×2</td>
+        <td><span class="pill pill-blue">50%</span></td>
+        <td>⭐⭐⭐⭐⭐ Excellent</td>
+        <td>Diagrams, contracts, detailed docs</td>
+      </tr>
+      <tr>
+        <td><strong>4-up</strong></td>
+        <td>2×2</td>
+        <td><span class="pill pill-green">75%</span></td>
+        <td>⭐⭐⭐⭐ Very Good</td>
+        <td>Lecture notes, study PDFs ✅ Most popular</td>
+      </tr>
+      <tr>
+        <td><strong>6-up</strong></td>
+        <td>2×3</td>
+        <td><span class="pill pill-green">83%</span></td>
+        <td>⭐⭐⭐ Good</td>
+        <td>Slide handouts with images</td>
+      </tr>
+      <tr>
+        <td><strong>9-up</strong></td>
+        <td>3×3</td>
+        <td><span class="pill pill-green">89%</span></td>
+        <td>⭐⭐ Moderate</td>
+        <td>Reference sheets, quick previews</td>
+      </tr>
+      <tr>
+        <td><strong>16-up</strong></td>
+        <td>4×4</td>
+        <td><span class="pill pill-orange">94%</span></td>
+        <td>⭐ Small</td>
+        <td>Thumbnails, storyboards, bookmarks</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ARTICLE -->
+<div class="article">
+  <h2>Which Layout Should You Choose?</h2>
+
+  <h3>For Students (School, College, University)</h3>
+  <p>The <strong>4 pages per sheet</strong> layout is the most popular choice for students in Bangladesh. It cuts your printing cost by 75% while keeping the text readable for revision. A 100-page PDF becomes just 25 A4 sheets.</p>
+  <p>If your PDF has very small text, use <strong>2 pages per sheet</strong> instead — you'll still save 50% and the text will be comfortable to read.</p>
+
+  <div class="tip-box">
+    <strong>💡 Student Tip:</strong> For university lecture slides where each slide has large headings and a few bullet points, 4-up printing is perfect. For engineering or medical textbooks with dense text and diagrams, 2-up is safer.
+  </div>
+
+  <h3>For Teachers and Coaching Centers</h3>
+  <p>When printing class handouts, <strong>4-up or 6-up layouts</strong> dramatically reduce your printing budget. For a batch of 50 students and a 40-page handout, you go from 2,000 sheets down to just 500 (4-up) or 334 (6-up).</p>
+
+  <h3>For Offices and Businesses</h3>
+  <p>For reference materials, meeting agendas, and internal documents, <strong>2-up or 4-up</strong> printing reduces costs without sacrificing readability. Use 2-up for documents people need to write annotations on.</p>
+
+  <h2>How N-Up Printing Works</h2>
+  <p>N-up printing (also called "multiple pages per sheet") rearranges the pages of your PDF onto fewer sheets by shrinking each page and placing multiple of them on a single A4 or letter-sized page. The original content is unchanged — only the size is reduced.</p>
+  <p>LowCostPDF.xyz does this entirely inside your browser. No internet upload is needed — your PDF is processed locally using <strong>PDF-lib</strong>, a JavaScript library that runs on your own device.</p>
+
+  <h2>Is 4-Up Printing Always Readable?</h2>
+  <p>It depends on your original PDF's font size and layout. As a general rule:</p>
+  <ul>
+    <li>PDFs with 12pt+ body text → 4-up is comfortable to read</li>
+    <li>PDFs with 10–11pt text → 4-up is tight; consider 2-up</li>
+    <li>Slide-deck PDFs (large fonts, few words) → 6-up or 9-up is fine</li>
+    <li>Scanned PDFs with handwriting → use 2-up to keep it legible</li>
+  </ul>
+</div>
+
+<!-- FAQ -->
+<div class="section">
+  <h2>Frequently Asked Questions</h2>
+  <p class="lead">Common questions about N-up PDF printing</p>
+  <div class="faq-wrap" style="padding:0;">
+    <details>
+      <summary>What is N-up printing?</summary>
+      <p>N-up printing means placing N pages of a document onto a single printed sheet. For example, 4-up means 4 pages on one sheet (saving 75% paper). The term "N-up" comes from the printing industry.</p>
+    </details>
+    <details>
+      <summary>How do I print multiple pages per sheet on any printer?</summary>
+      <p>Use LowCostPDF.xyz to convert your PDF to an N-up layout, then open the converted PDF and print normally with your printer set to A4. No special printer settings are needed — the layout is already built into the output PDF.</p>
+    </details>
+    <details>
+      <summary>Which layout saves the most paper?</summary>
+      <p>The 16-up layout saves ~94% of paper but text becomes very small. For practical use, 4-up (75% savings) offers the best balance of paper savings and readability.</p>
+    </details>
+    <details>
+      <summary>Does this work with scanned PDFs?</summary>
+      <p>Yes. LowCostPDF.xyz works with any PDF — scanned, image-based, or text-based. For scanned PDFs with handwriting, we recommend 2-up to keep the writing legible.</p>
+    </details>
+    <details>
+      <summary>Can I print different page counts per sheet in a single document?</summary>
+      <p>Currently, LowCostPDF.xyz applies a single layout to the entire document. If you need different layouts for different sections, split your PDF first, convert each part, then combine.</p>
+    </details>
+  </div>
+</div>
+
+<div class="cta-strip">
+  <h2>Start Printing Smarter Today</h2>
+  <p>Free, instant, private. No signup required. Works on any device with a browser.</p>
+  <a href="/" class="btn-white">⚡ Open LowCostPDF.xyz Free</a>
+</div>
+
+<footer>
+  <p>© 2026 LowCostPDF.xyz — Free PDF Multi-Page Printing for Bangladesh & Beyond</p>
+  <p style="margin-top:8px;">
+    <a href="/">Home</a>
+    <a href="/print-4-pages-per-sheet.html">4-Up Guide</a>
+    <a href="/about.html">About</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+  </p>
+</footer>
+
+</body>
+</html>

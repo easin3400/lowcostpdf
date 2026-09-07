@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-adsense-account" content="ca-pub-1862461718768433">
+  <title>LowCostPDF.xyz — Free PDF Tools: N-up Printing, Merge &amp; Grayscale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Free browser-based PDF tools. Print 2, 4, 6, 9 or 16 pages per sheet (N-up). Merge multiple PDFs into one. Convert PDF to grayscale. No upload, no signup — runs entirely in your browser.">
+  <meta name="keywords" content="n-up printing, print multiple pages per sheet, merge PDF free, grayscale PDF, free PDF tool, browser PDF, PDF Bangladesh">
+  <meta name="google-site-verification" content="C4LQxTl3RPBmWBSnD0YnNBdDkIpz20VdR0UHvSAnyjc" />
+  <link rel="canonical" href="https://lowcostpdf.xyz/" />
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LowCostPDF.xyz — Free PDF Tools">
+  <meta property="og:description" content="Print multiple pages per sheet, merge PDFs, convert to grayscale — all in your browser, no upload needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lowcostpdf.xyz/">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"LowCostPDF.xyz","description":"Free browser-based PDF tools: N-up printing, merge PDFs, grayscale conversion","url":"https://lowcostpdf.xyz","applicationCategory":"UtilityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- PDF processing libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg: #b8cdd8;
+      --surface: #ffffff;
+      --surface2: #f0f6fa;
+      --primary: #1e4d7b;
+      --primary-light: #2563ae;
+      --accent: #3aaa5c;
+      --accent2: #e8f5ee;
+      --text: #1a2e3b;
+      --text-muted: #4a6b80;
+      --border: #ccdde8;
+      --shadow: 0 8px 32px rgba(30,77,123,.13);
+      --radius: 16px;
+      --font: 'Outfit', Arial, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d1b2a;
+      --surface: #162032;
+      --surface2: #1a2a3e;
+      --primary: #5aade8;
+      --primary-light: #7bc2f5;
+      --accent: #3aaa5c;
+      --accent2: #0d2419;
+      --text: #e4eef7;
+      --text-muted: #7a9bb5;
+      --border: #263a52;
+      --shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      background-image: url("Gemini_Generated_background.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--text);
+      transition: background-color .3s, color .3s;
+    }
+
+    [data-theme="dark"] body { background-image: none; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background .3s, border-color .3s;
+    }
+
+    [data-theme="dark"] .topbar {
+      background: rgba(22,32,50,0.88);
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
+    .topbar img { height: 46px; object-fit: contain; }
+    .topbar-title { font-size: 22px; font-weight: 900; color: var(--primary); }
+    .topbar-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; font-weight: 700; }
+    .topbar-spacer { flex: 1; }
+
+    .dark-toggle {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s;
+      font-family: var(--font);
+    }
+
+    .dark-toggle:hover { background: var(--border); }
+
+    /* ── HERO ── */
+    .hero { text-align: center; padding: 48px 20px 20px; }
+
+    .hero h1 {
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1.25;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-sub { margin-top: 12px; font-size: 15px; color: var(--text-muted); font-weight: 700; line-height: 1.6; }
+
+    .badge-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+    .badge {
+      background: rgba(255,255,255,0.84);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .badge.green { background: var(--accent2); border-color: var(--accent); color: #1a6b35; }
+
+    [data-theme="dark"] .badge { background: rgba(255,255,255,0.1); }
+    [data-theme="dark"] .badge.green { color: var(--accent); }
+
+    /* ── TOOL NAV ── */
+    .tool-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 20px 16px 0;
+    }
+
+    .tool-btn {
+      background: rgba(255,255,255,0.75);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .2s;
+      font-family: var(--font);
+    }
+
+    .tool-btn:hover { border-color: var(--primary-light); color: var(--primary); background: rgba(255,255,255,0.95); }
+
+    .tool-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .tool-btn { background: rgba(255,255,255,0.07); color: var(--text-muted); }
+    [data-theme="dark"] .tool-btn:hover { background: rgba(255,255,255,0.13); color: var(--text); }
+    [data-theme="dark"] .tool-btn.active { background: linear-gradient(135deg, #27659e 0%, #3a8ad4 100%); border-color: #3a8ad4; color: #fff; }
+
+    /* ── MAIN CARD ── */
+    .main-card { max-width: 900px; margin: 14px auto 40px; padding: 0 16px; }
+
+    .card {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      border: 1.5px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      transition: background .3s, border-color .3s;
+    }
+
+    [data-theme="dark"] .card { background: rgba(22,32,50,0.92); border-color: rgba(255,255,255,0.1); }
+
+    /* ── FORMAT CHIP ── */
+    .formats-title {
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .format-chip {
+      background: var(--accent2);
+      border: 1.5px solid var(--accent);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .format-icon { font-size: 34px; }
+    .format-chip .ext { font-size: 18px; font-weight: 900; color: var(--primary); }
+    .format-chip .desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 700; line-height: 1.5; }
+
+    [data-theme="dark"] .format-chip .ext { color: var(--primary-light); }
+
+    /* ── FORM ── */
+    .form-row { margin-bottom: 20px; }
+    .label-bilingual { display: flex; flex-direction: column; margin-bottom: 8px; }
+    .label-en { font-size: 13px; font-weight: 900; color: var(--text); }
+
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background .3s, color .3s, border-color .3s;
+    }
+
+    select:focus { outline: none; border-color: var(--primary-light); }
+
+    /* ── DROP ZONE ── */
+    .drop-zone {
+      border: 2.5px dashed var(--primary-light);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: rgba(37,99,174,0.04);
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover { background: rgba(37,99,174,0.09); border-color: var(--primary); }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon { font-size: 40px; margin-bottom: 8px; }
+    .drop-text-en { font-size: 15px; font-weight: 900; color: var(--primary); }
+    .drop-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; font-weight: 700; line-height: 1.5; }
+
+    .file-selected {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1a6b35;
+    }
+
+    [data-theme="dark"] .file-selected { color: var(--accent); }
+
+    /* ── BUTTONS ── */
+    .btn-convert {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(30,77,123,.25);
+      margin-top: 8px;
+      transition: transform .15s, box-shadow .15s;
+      font-family: var(--font);
+    }
+
+    .btn-convert:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,77,123,.3); }
+    .btn-convert:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    /* ── PROGRESS ── */
+    .progress-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 20px;
+      text-align: center;
+    }
+
+    .spinner-ring { position: relative; width: 110px; height: 110px; margin-bottom: 20px; }
+    .spinner-ring svg { transform: rotate(-90deg); }
+    .spinner-bg { fill: none; stroke: #e0ecf5; stroke-width: 8; }
+    .spinner-bar { fill: none; stroke: var(--primary); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 314; stroke-dashoffset: 314; transition: stroke-dashoffset .1s linear; }
+    .spinner-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: var(--primary); }
+    .progress-text-en { font-size: 16px; font-weight: 900; color: var(--primary); }
+    .progress-step { font-size: 12px; color: var(--text-muted); margin-top: 8px; font-weight: 700; }
+
+    [data-theme="dark"] .spinner-bg { stroke: #263a52; }
+
+    /* ── INFO ROW ── */
+    .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+
+    .info-box { background: var(--surface2); border-radius: 10px; border: 1.5px solid var(--border); padding: 14px; transition: background .3s; }
+    .info-box .icon { font-size: 22px; margin-bottom: 6px; }
+    .info-box .en { font-size: 13px; font-weight: 900; color: var(--text); }
+
+    /* ── MERGE TOOL ── */
+    .merge-file-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; min-height: 0; }
+
+    .merge-file-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      cursor: grab;
+      transition: border-color .2s, background .2s, opacity .2s;
+      user-select: none;
+    }
+
+    .merge-file-card:active { cursor: grabbing; }
+    .merge-file-card.drag-over { border-color: var(--primary); background: rgba(37,99,174,0.08); }
+    .merge-file-card.dragging { opacity: .35; }
+
+    .drag-handle { color: var(--text-muted); font-size: 17px; flex-shrink: 0; cursor: grab; line-height: 1; }
+    .merge-file-num { background: var(--primary); color: #fff; border-radius: 999px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; }
+    .merge-file-name { flex: 1; font-size: 13px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .merge-file-size { font-size: 11px; color: var(--text-muted); font-weight: 700; flex-shrink: 0; }
+
+    .merge-file-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .merge-file-remove:hover { color: #e53e3e; background: rgba(229,62,62,0.1); }
+
+    .merge-add-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: none;
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 11px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      font-family: var(--font);
+      transition: all .2s;
+      position: relative;
+    }
+
+    .merge-add-more:hover { border-color: var(--primary-light); color: var(--primary); }
+    .merge-add-more input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    .merge-summary {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    /* ── GRAYSCALE TOOL ── */
+    .gs-quality-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    .gs-qual-btn {
+      flex: 1;
+      min-width: 90px;
+      padding: 10px 8px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font);
+      transition: all .2s;
+    }
+
+    .gs-qual-btn small { display: block; font-size: 10px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+    .gs-qual-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(37,99,174,0.07); }
+
+    /* ── PREVIEW MODAL ── */
+    .preview-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .preview-modal.open { display: flex; }
+
+    .preview-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(5px);
+    }
+
+    .preview-dialog {
+      position: relative;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: 0 24px 80px rgba(0,0,0,.45);
+      padding: 28px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      transition: background .3s;
+    }
+
+    .preview-dialog h3 { font-size: 18px; font-weight: 900; color: var(--primary); align-self: flex-start; }
+
+    .preview-canvas-wrap {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f5f5f5;
+    }
+
+    .preview-canvas-wrap canvas { width: 100%; height: auto; display: block; }
+
+    .preview-loading { padding: 40px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+
+    .preview-info { font-size: 12px; color: var(--text-muted); font-weight: 700; text-align: center; }
+
+    .preview-actions { display: flex; gap: 10px; width: 100%; }
+
+    .btn-download-pdf {
+      flex: 1;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--accent) 0%, #2e9050 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 4px 14px rgba(58,170,92,.3);
+    }
+
+    .btn-download-pdf:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(58,170,92,.4); }
+
+    .btn-close-preview {
+      padding: 13px 18px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all .2s;
+    }
+
+    .btn-close-preview:hover { border-color: var(--primary-light); }
+
+    /* ── BLOG SECTION ── */
+    .blog-section { max-width: 900px; margin: 0 auto 52px; padding: 0 16px; }
+
+    .blog-section h2 { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 16px; }
+
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+
+    .blog-card {
+      background: rgba(255,255,255,0.88);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      transition: transform .2s, box-shadow .2s, background .3s;
+    }
+
+    [data-theme="dark"] .blog-card { background: rgba(22,32,50,0.88); }
+
+    .blog-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30,77,123,.15); }
+
+    .blog-cat { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--accent); margin-bottom: 8px; }
+
+    .blog-card h3 { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.4; margin-bottom: 8px; }
+    .blog-card h3 a { color: inherit; text-decoration: none; }
+    .blog-card h3 a:hover { color: var(--primary); }
+
+    .blog-card p { font-size: 12px; color: var(--text-muted); font-weight: 600; line-height: 1.6; }
+
+    .blog-read-more { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; font-size: 12px; font-weight: 800; color: var(--primary); text-decoration: none; }
+    .blog-read-more:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer { text-align: center; padding: 20px; font-size: 12px; color: rgba(30,77,123,.8); font-weight: 800; line-height: 1.8; }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 900; }
+    footer a:hover { text-decoration: underline; }
+    [data-theme="dark"] footer { color: var(--text-muted); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 600px) {
+      .topbar { padding: 12px 18px; }
+      .card { padding: 20px; }
+      .info-row { grid-template-columns: 1fr; }
+      .preview-dialog { padding: 18px; }
+      .preview-actions { flex-direction: column; }
+      .gs-quality-row { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ TOP BAR ══ -->
+  <div class="topbar">
+    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+      <rect width="46" height="46" rx="10" fill="#1e4d7b"/>
+      <rect x="10" y="7" width="20" height="26" rx="2" fill="white" opacity="0.95"/>
+      <rect x="13" y="12" width="14" height="2" rx="1" fill="#1e4d7b"/>
+      <rect x="13" y="16" width="14" height="2" rx="1" fill="#1e4d7b"/>
+      <rect x="13" y="20" width="10" height="2" rx="1" fill="#1e4d7b"/>
+      <circle cx="31" cy="31" r="9" fill="#3aaa5c"/>
+      <text x="31" y="35" font-size="11" font-weight="900" text-anchor="middle" fill="white" font-family="Arial">₵</text>
+    </svg>
+    <div>
+      <div class="topbar-title">LowCostPDF<span style="color:var(--accent)">.xyz</span></div>
+      <div class="topbar-sub">Free PDF Tools · No Upload · No Signup</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <button class="dark-toggle" id="dark-toggle-btn" onclick="toggleDark()">🌙 Dark Mode</button>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <div class="hero">
+    <h1>Free PDF Tools — <span>No Upload Needed</span></h1>
+    <div class="hero-sub">N-up Printing · Merge PDFs · Grayscale · 100% in your browser · Completely private</div>
+    <div class="badge-row">
+      <div class="badge green">✅ Free Forever</div>
+      <div class="badge green">🔒 100% Private</div>
+      <div class="badge">📄 PDF Only</div>
+      <div class="badge">⚡ No Signup</div>
+      <div class="badge">🌐 Works Offline</div>
+    </div>
+  </div>
+
+  <!-- ══ TOOL NAV ══ -->
+  <div class="tool-nav">
+    <button class="tool-btn active" id="nav-nup"       onclick="switchTool('nup',this)">📐 N-up Layout</button>
+    <button class="tool-btn"        id="nav-merge"     onclick="switchTool('merge',this)">🔗 Merge PDFs</button>
+    <button class="tool-btn"        id="nav-grayscale" onclick="switchTool('grayscale',this)">🩶 Grayscale</button>
+  </div>
+
+  <!-- ══ MAIN CARD ══ -->
+  <div class="main-card">
+    <div class="card">
+
+      <!-- ── FORMAT CHIP (shared) ── -->
+      <div class="formats-title">📂 Supported Format</div>
+      <div class="format-chip">
+        <div class="format-icon">📄</div>
+        <div>
+          <div class="ext">PDF only</div>
+          <div class="desc">Accepts .pdf files only · Max 30 MB · Processed entirely in your browser</div>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════
+           TOOL: N-UP LAYOUT
+           ════════════════════════════════════════════════ -->
+      <div id="tool-nup" class="tool-section">
+
+        <div id="upload-form">
+
+          <!-- LAYOUT SELECT -->
+          <div class="form-row">
+            <div class="label-bilingual">
+              <span class="label-en">📐 Choose Print Layout</span>
+              <span class="label-en" style="font-weight:700;color:var(--text-muted)">4 pages per sheet ideal for school, college, university PDF</span>
+            </div>
+            <select id="layout" name="layout">
+              <option value="4" selected>⭐ 4 pages per sheet (2×2) — Recommended</option>
+              <option value="2">2 pages per sheet</option>
+              <option value="6">6 pages per sheet</option>
+              <option value="9">9 pages per sheet</option>
+              <option value="16">16 pages per sheet</option>
+            </select>
+          </div>
+
+          <!-- FILE DROP ZONE -->
+          <div class="form-row">
+            <div class="label-bilingual">
+              <span class="label-en">📎 Upload Your PDF(s)</span>
+              <span class="label-en" style="font-weight:700;color:var(--text-muted)">Select one or multiple PDFs · Max 30MB each</span>
+            </div>
+
+            <!-- initial drop zone (shown when list is empty) -->
+            <div id="nup-drop-wrap">
+              <div class="drop-zone" id="drop-zone">
+                <input type="file" id="file-input" accept=".pdf,application/pdf" multiple>
+                <div class="drop-icon">☁️</div>
+                <div class="drop-text-en">Click or Drag &amp; Drop your PDFs here</div>
+                <div class="drop-hint">Select multiple files at once · Max 30MB each · PDF files only</div>
+              </div>
+            </div>
+
+            <!-- file list (shown after files added) -->
+            <div id="nup-list-wrap" style="display:none">
+              <div class="merge-summary" id="nup-summary">0 files selected</div>
+              <div class="merge-file-list" id="nup-file-list"></div>
+              <button class="merge-add-more" type="button" style="margin-top:4px">
+                <input type="file" id="nup-add-input" accept=".pdf,application/pdf" multiple>
+                ➕ Add More PDFs
+              </button>
+            </div>
+          </div>
+
+          <!-- DOCX HINT -->
+          <div style="margin-bottom:18px;font-size:12px;color:#4a6b80;font-weight:700;line-height:1.6;">
+            If your file is DOC, DOCX, or TXT, first save/export it as PDF, then upload it here.
+          </div>
+
+          <!-- SUBMIT -->
+          <button class="btn-convert" id="convert-btn" onclick="startConvert()">
+            ⚡ Convert &amp; Preview PDF
+          </button>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-overlay" id="progress-overlay">
+          <div class="spinner-ring">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle class="spinner-bg" cx="55" cy="55" r="50"></circle>
+              <circle class="spinner-bar" id="spinner-bar" cx="55" cy="55" r="50"></circle>
+            </svg>
+            <div class="spinner-pct" id="spinner-pct">0%</div>
+          </div>
+          <div class="progress-text-en">Processing your PDF…</div>
+          <div class="progress-step" id="progress-step">Reading PDF…</div>
+        </div>
+
+        <!-- INFO ROW -->
+        <div class="info-row">
+          <div class="info-box">
+            <div class="icon">💰</div>
+            <div class="en">Save up to 75% on printing costs</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">🔒</div>
+            <div class="en">Your PDF stays on your device</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">📚</div>
+            <div class="en">4 pages/sheet: ideal for school, college, university PDF</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">⚡</div>
+            <div class="en">No registration needed — completely free</div>
+          </div>
+        </div>
+      </div>
+      <!-- /tool-nup -->
+
+
+      <!-- ════════════════════════════════════════════════
+           TOOL: MERGE PDFs
+           ════════════════════════════════════════════════ -->
+      <div id="tool-merge" class="tool-section" style="display:none">
+
+        <div id="merge-form">
+          <!-- initial drop zone (shown when list is empty) -->
+          <div id="merge-drop-wrap">
+            <div class="drop-zone" id="merge-drop-zone">
+              <input type="file" id="merge-file-input" accept=".pdf,application/pdf" multiple>
+              <div class="drop-icon">📂</div>
+              <div class="drop-text-en">Click or Drop PDF files here</div>
+              <div class="drop-hint">Select multiple files at once · Each max 30MB · Unlimited count</div>
+            </div>
+          </div>
+
+          <!-- file list (shown after files added) -->
+          <div id="merge-list-wrap" style="display:none">
+            <div class="merge-summary" id="merge-summary">0 files selected</div>
+            <div class="merge-file-list" id="merge-file-list"></div>
+
+            <!-- add more button -->
+            <button class="merge-add-more" style="margin-top:4px">
+              <input type="file" id="merge-add-input" accept=".pdf,application/pdf" multiple>
+              ➕ Add More PDFs
+            </button>
+
+            <button class="btn-convert" onclick="startMerge()" id="merge-btn" style="margin-top:16px">
+              🔗 Merge &amp; Preview PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- progress -->
+        <div class="progress-overlay" id="merge-progress">
+          <div class="spinner-ring">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle class="spinner-bg" cx="55" cy="55" r="50"></circle>
+              <circle class="spinner-bar" id="merge-spinner-bar" cx="55" cy="55" r="50"></circle>
+            </svg>
+            <div class="spinner-pct" id="merge-spinner-pct">0%</div>
+          </div>
+          <div class="progress-text-en">Merging PDFs…</div>
+          <div class="progress-step" id="merge-progress-step">Loading files…</div>
+        </div>
+
+        <!-- info -->
+        <div class="info-row" style="margin-top:20px">
+          <div class="info-box">
+            <div class="icon">🔗</div>
+            <div class="en">Combine unlimited PDFs into one file</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">↕️</div>
+            <div class="en">Drag to reorder pages before merging</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">🔒</div>
+            <div class="en">Files never leave your device</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">⚡</div>
+            <div class="en">Instant merge, no waiting</div>
+          </div>
+        </div>
+      </div>
+      <!-- /tool-merge -->
+
+
+      <!-- ════════════════════════════════════════════════
+           TOOL: GRAYSCALE
+           ════════════════════════════════════════════════ -->
+      <div id="tool-grayscale" class="tool-section" style="display:none">
+
+        <div id="gs-form">
+          <!-- quality picker -->
+          <div class="form-row">
+            <div class="label-bilingual">
+              <span class="label-en">🎛️ Output Quality</span>
+              <span class="label-en" style="font-weight:700;color:var(--text-muted)">Higher quality = larger file size &amp; slower processing</span>
+            </div>
+            <div class="gs-quality-row">
+              <button class="gs-qual-btn" onclick="setGsScale(1.0, this)">Draft<small>~72 DPI · Fast</small></button>
+              <button class="gs-qual-btn active" onclick="setGsScale(1.5, this)">Good<small>~108 DPI · Recommended</small></button>
+              <button class="gs-qual-btn" onclick="setGsScale(2.0, this)">High<small>~144 DPI · Slow</small></button>
+            </div>
+          </div>
+
+          <!-- file drop zone -->
+          <div class="form-row">
+            <div class="label-bilingual">
+              <span class="label-en">📎 Upload Your PDF</span>
+              <span class="label-en" style="font-weight:700;color:var(--text-muted)">Only PDF supported · Max 30MB · Max 40 pages</span>
+            </div>
+            <div class="drop-zone" id="gs-drop-zone">
+              <input type="file" id="gs-file-input" accept=".pdf,application/pdf">
+              <div class="drop-icon">🩶</div>
+              <div class="drop-text-en">Click or Drag &amp; Drop your PDF here</div>
+              <div class="drop-hint">Renders each page and converts to true grayscale</div>
+            </div>
+            <div class="file-selected" id="gs-file-selected">
+              <span>✅</span>
+              <span id="gs-file-name">file.pdf</span>
+            </div>
+          </div>
+
+          <button class="btn-convert" onclick="startGrayscale()">
+            🩶 Convert to Grayscale &amp; Preview
+          </button>
+        </div>
+
+        <!-- progress -->
+        <div class="progress-overlay" id="gs-progress">
+          <div class="spinner-ring">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle class="spinner-bg" cx="55" cy="55" r="50"></circle>
+              <circle class="spinner-bar" id="gs-spinner-bar" cx="55" cy="55" r="50"></circle>
+            </svg>
+            <div class="spinner-pct" id="gs-spinner-pct">0%</div>
+          </div>
+          <div class="progress-text-en">Converting to grayscale…</div>
+          <div class="progress-step" id="gs-progress-step">Loading PDF…</div>
+        </div>
+
+        <!-- info -->
+        <div class="info-row" style="margin-top:20px">
+          <div class="info-box">
+            <div class="icon">🖨️</div>
+            <div class="en">Save on color ink — print in black &amp; white</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">🎨</div>
+            <div class="en">True pixel-level grayscale conversion</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">🔒</div>
+            <div class="en">Fully browser-based — no upload</div>
+          </div>
+          <div class="info-box">
+            <div class="icon">📄</div>
+            <div class="en">Max 40 pages per conversion</div>
+          </div>
+        </div>
+      </div>
+      <!-- /tool-grayscale -->
+
+    </div><!-- /card -->
+  </div><!-- /main-card -->
+
+
+  <!-- ══ BLOG SECTION (SEO) ══ -->
+  <section class="blog-section" aria-label="PDF Tips and Guides">
+    <h2>📰 PDF Tips &amp; Guides</h2>
+    <div class="blog-grid">
+
+      <article class="blog-card">
+        <div class="blog-cat">📐 N-up Printing</div>
+        <h3><a href="/blog/how-to-print-4-pages-per-sheet.html">How to Print 4 Pages on One Sheet &amp; Save Paper</a></h3>
+        <p>Learn how N-up printing cuts your paper use by 75%. Perfect for students printing lecture notes and textbooks.</p>
+        <a class="blog-read-more" href="/blog/how-to-print-4-pages-per-sheet.html">Read guide →</a>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-cat">📐 N-up Guide</div>
+        <h3><a href="/blog/n-up-printing-guide.html">N-up Printing Explained: 2-up, 4-up, 6-up, 9-up &amp; 16-up</a></h3>
+        <p>Which layout should you choose? We compare every N-up option so you get the best balance of readability and savings.</p>
+        <a class="blog-read-more" href="/blog/n-up-printing-guide.html">Read guide →</a>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-cat">🔗 Merge PDFs</div>
+        <h3><a href="/blog/how-to-merge-pdf-free-browser.html">How to Merge PDF Files for Free in Your Browser</a></h3>
+        <p>No software to install, no file uploads. Combine multiple PDFs into one document in seconds using just your browser.</p>
+        <a class="blog-read-more" href="/blog/how-to-merge-pdf-free-browser.html">Read guide →</a>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-cat">🩶 Grayscale</div>
+        <h3><a href="/blog/convert-pdf-to-grayscale.html">Converting PDF to Grayscale to Save on Color Ink</a></h3>
+        <p>Color ink cartridges cost up to 5× more than black ink. Converting your PDF to grayscale before printing can save significant money.</p>
+        <a class="blog-read-more" href="/blog/convert-pdf-to-grayscale.html">Read guide →</a>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-cat">🎓 For Students</div>
+        <h3><a href="/blog/pdf-tools-for-students-bangladesh.html">PDF Tools for Students: Print Study Materials Cheaply</a></h3>
+        <p>University printing costs add up fast. Here's how Bangladeshi students use LowCostPDF to slash their printing bills every semester.</p>
+        <a class="blog-read-more" href="/blog/pdf-tools-for-students-bangladesh.html">Read guide →</a>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-cat">🔒 Privacy</div>
+        <h3><a href="/blog/why-browser-pdf-tools-are-more-private.html">Why Browser-Based PDF Tools Protect Your Privacy</a></h3>
+        <p>When you upload a PDF to an online converter, where does it go? Browser-based tools like LowCostPDF never send your files anywhere.</p>
+        <a class="blog-read-more" href="/blog/why-browser-pdf-tools-are-more-private.html">Read guide →</a>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    LowCostPDF.xyz • Bangladesh 🇧🇩 • Free • No signup
+    <br>
+    <a href="about.html">About</a> ·
+    <a href="privacy.html">Privacy Policy</a> ·
+    <a href="terms.html">Terms</a> ·
+    <a href="/blog/">Blog</a>
+  </footer>
+
+
+  <!-- ══ PREVIEW MODAL ══ -->
+  <div class="preview-modal" id="preview-modal">
+    <div class="preview-backdrop" onclick="closePreview()"></div>
+    <div class="preview-dialog">
+      <h3>📄 Output Preview — Page 1</h3>
+      <div class="preview-canvas-wrap" id="preview-canvas-wrap">
+        <div class="preview-loading" id="preview-loading">Rendering preview…</div>
+        <canvas id="preview-canvas" style="display:none"></canvas>
+      </div>
+      <div class="preview-info" id="preview-info"></div>
+      <div class="preview-actions">
+        <button class="btn-download-pdf" onclick="doDownload()">⬇️ Download PDF</button>
+        <button class="btn-close-preview" onclick="closePreview()">✕ Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    /* ═══════════════════════════════════════════
+       PDF.JS SETUP
+       ═══════════════════════════════════════════ */
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    /* ═══════════════════════════════════════════
+       DARK MODE
+       ═══════════════════════════════════════════ */
+    function initDarkMode() {
+      const saved = localStorage.getItem('lcpdf-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('dark-toggle-btn').textContent =
+        saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function toggleDark() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('lcpdf-theme', next);
+      document.getElementById('dark-toggle-btn').textContent =
+        next === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    /* ═══════════════════════════════════════════
+       TOOL SWITCHING
+       ═══════════════════════════════════════════ */
+    function switchTool(name, btn) {
+      document.querySelectorAll('.tool-section').forEach(function(s) { s.style.display = 'none'; });
+      document.getElementById('tool-' + name).style.display = 'block';
+      document.querySelectorAll('.tool-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    /* ═══════════════════════════════════════════
+       PREVIEW MODAL
+       ═══════════════════════════════════════════ */
+    var _pendingDownload = null;  // { bytes: Uint8Array, filename: string }
+    var _activeResetFn   = null;  // function to reset the active tool UI
+
+    async function showPreview(bytes, filename, resetFn) {
+      _pendingDownload = { bytes: bytes, filename: filename };
+      _activeResetFn   = resetFn || null;
+
+      var modal   = document.getElementById('preview-modal');
+      var canvas  = document.getElementById('preview-canvas');
+      var loading = document.getElementById('preview-loading');
+      var info    = document.getElementById('preview-info');
+
+      modal.classList.add('open');
+      loading.style.display = 'block';
+      canvas.style.display  = 'none';
+      info.textContent       = '';
+
+      try {
+        if (typeof pdfjsLib === 'undefined') { throw new Error('pdf.js not loaded'); }
+        var loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(bytes) });
+        var pdfDoc      = await loadingTask.promise;
+        var page        = await pdfDoc.getPage(1);
+
+        var naturalVp  = page.getViewport({ scale: 1 });
+        var scale      = Math.min(2, 460 / naturalVp.width);
+        var viewport   = page.getViewport({ scale: scale });
+
+        canvas.width  = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        loading.style.display = 'none';
+        canvas.style.display  = 'block';
+        info.textContent      = 'Preview: Page 1 of ' + pdfDoc.numPages + ' · ' + filename;
+
+      } catch(e) {
+        loading.style.display = 'none';
+        canvas.style.display  = 'none';
+        info.textContent      = 'Preview unavailable — click Download to save the file.';
+      }
+    }
+
+    function closePreview() {
+      document.getElementById('preview-modal').classList.remove('open');
+    }
+
+    function doDownload() {
+      if (!_pendingDownload) return;
+      var blob = new Blob([_pendingDownload.bytes], { type: 'application/pdf' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href     = url;
+      a.download = _pendingDownload.filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      _pendingDownload = null;
+
+      closePreview();
+      if (_activeResetFn) { _activeResetFn(); _activeResetFn = null; }
+    }
+
+
+    /* ═══════════════════════════════════════════
+       N-UP TOOL  (original logic preserved)
+       ═══════════════════════════════════════════ */
+    var dz   = document.getElementById('drop-zone');
+    var fi   = document.getElementById('file-input');
+
+    var MAX_FILE_SIZE = 30 * 1024 * 1024;
+    var MAX_PAGES     = 150;
+
+    var nupFiles = [];
+
+    dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', function() { dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      if (e.dataTransfer.files.length) addNupFiles(Array.from(e.dataTransfer.files));
+    });
+
+    fi.addEventListener('change', function() {
+      if (fi.files.length) { addNupFiles(Array.from(fi.files)); fi.value = ''; }
+    });
+
+    document.getElementById('nup-add-input').addEventListener('change', function() {
+      if (this.files.length) { addNupFiles(Array.from(this.files)); this.value = ''; }
+    });
+
+    function validateFile(file) {
+      if (!file.name.toLowerCase().endsWith('.pdf')) { alert(file.name + ': Only PDF files are supported.'); return false; }
+      if (file.size > MAX_FILE_SIZE) { alert(file.name + ': File too large. Maximum is 30MB.'); return false; }
+      return true;
+    }
+
+    function addNupFiles(files) {
+      files.forEach(function(f) {
+        if (!validateFile(f)) return;
+        nupFiles.push(f);
+      });
+      renderNupList();
+    }
+
+    function removeNupFile(idx) {
+      nupFiles.splice(idx, 1);
+      renderNupList();
+    }
+
+    function renderNupList() {
+      if (nupFiles.length === 0) {
+        document.getElementById('nup-drop-wrap').style.display = 'block';
+        document.getElementById('nup-list-wrap').style.display = 'none';
+        return;
+      }
+      document.getElementById('nup-drop-wrap').style.display = 'none';
+      document.getElementById('nup-list-wrap').style.display = 'block';
+      document.getElementById('nup-summary').textContent = nupFiles.length + ' file' + (nupFiles.length > 1 ? 's' : '') + ' selected';
+
+      var list = document.getElementById('nup-file-list');
+      list.innerHTML = '';
+      nupFiles.forEach(function(f, i) {
+        var size = f.size < 1024 * 1024
+          ? (f.size / 1024).toFixed(0) + ' KB'
+          : (f.size / (1024 * 1024)).toFixed(1) + ' MB';
+        var card = document.createElement('div');
+        card.className = 'merge-file-card';
+        card.innerHTML =
+          '<span class="merge-file-num">' + (i + 1) + '</span>' +
+          '<span class="merge-file-name">' + escHtml(f.name) + '</span>' +
+          '<span class="merge-file-size">' + size + '</span>' +
+          '<button class="merge-file-remove" title="Remove" onclick="removeNupFile(' + i + ')">✕</button>';
+        list.appendChild(card);
+      });
+    }
+
+    var nupSteps = [
+      { pct: 15, label: 'Reading PDF…' },
+      { pct: 35, label: 'Preparing pages…' },
+      { pct: 55, label: 'Applying layout…' },
+      { pct: 75, label: 'Creating new PDF…' },
+      { pct: 90, label: 'Finalising…' },
+      { pct: 100, label: 'Generating preview…' }
+    ];
+
+    function getLayoutConfig(layoutValue) {
+      var layout = String(layoutValue || '4');
+      if (layout === '2')  return { perSheet: 2,  rows: 1, cols: 2, label: '2-up' };
+      if (layout === '6')  return { perSheet: 6,  rows: 2, cols: 3, label: '6-up' };
+      if (layout === '9')  return { perSheet: 9,  rows: 3, cols: 3, label: '9-up' };
+      if (layout === '16') return { perSheet: 16, rows: 4, cols: 4, label: '16-up' };
+      return { perSheet: 4, rows: 2, cols: 2, label: '4-up' };
+    }
+
+    function startConvert() {
+      if (!nupFiles.length) { alert('Please select at least one PDF file!'); return; }
+      document.getElementById('upload-form').style.display = 'none';
+      var ov = document.getElementById('progress-overlay');
+      ov.style.display = 'flex';
+
+      var bar    = document.getElementById('spinner-bar');
+      var pctEl  = document.getElementById('spinner-pct');
+      var stepEl = document.getElementById('progress-step');
+      var circumference = 314;
+      var current = 0, stepIdx = 0;
+
+      function setProgress(p) {
+        bar.style.strokeDashoffset = circumference - (p / 100) * circumference;
+        pctEl.textContent = Math.round(p) + '%';
+        while (stepIdx < nupSteps.length - 1 && p >= nupSteps[stepIdx].pct) stepIdx++;
+        stepEl.textContent = nupSteps[Math.max(0, stepIdx)].label;
+      }
+
+      var fast = setInterval(function() {
+        current += 3;
+        if (current >= 90) { current = 90; clearInterval(fast); slowPhase(); }
+        setProgress(current);
+      }, 25);
+
+      function slowPhase() {
+        var slow = setInterval(function() {
+          current += 1;
+          if (current >= 100) {
+            current = 100; setProgress(100); clearInterval(slow);
+            setTimeout(convertAllNupFiles, 300);
+          } else { setProgress(current); }
+        }, 60);
+      }
+    }
+
+    async function convertAllNupFiles() {
+      var layoutValue = document.getElementById('layout').value;
+      var config      = getLayoutConfig(layoutValue);
+      var errors      = [];
+      var outputFiles = []; // { bytes, filename }
+
+      try {
+        if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+          throw new Error('PDF library failed to load. Please check your internet connection.');
+        }
+        var { PDFDocument, StandardFonts } = PDFLib;
+
+        for (var fi2 = 0; fi2 < nupFiles.length; fi2++) {
+          var file = nupFiles[fi2];
+          try {
+            var inputBytes = await file.arrayBuffer();
+            var srcPdf;
+            try { srcPdf = await PDFDocument.load(inputBytes); }
+            catch(e) { throw new Error('Invalid, damaged, or password-protected PDF.'); }
+
+            var srcPages = srcPdf.getPages();
+            if (!srcPages.length) throw new Error('This PDF has no pages.');
+            if (srcPages.length > MAX_PAGES) throw new Error('Too many pages. Maximum is 150.');
+
+            var outPdf    = await PDFDocument.create();
+            var wmFont    = await outPdf.embedFont(StandardFonts.HelveticaBold);
+            var A4_WIDTH  = 595.28;
+            var A4_HEIGHT = 841.89;
+            var cellWidth  = A4_WIDTH  / config.cols;
+            var cellHeight = A4_HEIGHT / config.rows;
+
+            for (var i = 0; i < srcPages.length; i += config.perSheet) {
+              var outputPage = outPdf.addPage([A4_WIDTH, A4_HEIGHT]);
+              outputPage.drawText('lowcostpdf.xyz', {
+                x: A4_WIDTH / 2 - 30, y: A4_HEIGHT / 2,
+                size: 8, font: wmFont, color: PDFLib.rgb(0.7, 0.7, 0.7), opacity: 0.9
+              });
+              var pageGroup     = srcPages.slice(i, i + config.perSheet);
+              var embeddedPages = await outPdf.embedPages(pageGroup);
+              embeddedPages.forEach(function(ep, index) {
+                var row = Math.floor(index / config.cols);
+                var col = index % config.cols;
+                var scale = Math.min(cellWidth / ep.width, cellHeight / ep.height);
+                var dw = ep.width * scale, dh = ep.height * scale;
+                var x = col * cellWidth + (cellWidth - dw) / 2;
+                var y = A4_HEIGHT - (row + 1) * cellHeight + (cellHeight - dh) / 2;
+                outputPage.drawPage(ep, { x: x, y: y, width: dw, height: dh });
+              });
+            }
+
+            var outputBytes = await outPdf.save();
+            var filename    = file.name.replace(/\.pdf$/i, '') + ' (lowcostpdf.xyz).pdf';
+            outputFiles.push({ bytes: outputBytes, filename: filename });
+
+          } catch(err) {
+            errors.push(file.name + ': ' + err.message);
+          }
+        }
+
+        document.getElementById('progress-overlay').style.display = 'none';
+
+        if (outputFiles.length === 0) {
+          alert('All files failed:\n' + errors.join('\n'));
+          resetNupUI();
+          return;
+        }
+
+        // Single file → show preview as before
+        if (outputFiles.length === 1 && errors.length === 0) {
+          await showPreview(outputFiles[0].bytes, outputFiles[0].filename, resetNupUI);
+          return;
+        }
+
+        // Multiple files → auto-download each, then show summary
+        for (var j = 0; j < outputFiles.length; j++) {
+          var blob = new Blob([outputFiles[j].bytes], { type: 'application/pdf' });
+          var url  = URL.createObjectURL(blob);
+          var a    = document.createElement('a');
+          a.href = url; a.download = outputFiles[j].filename;
+          document.body.appendChild(a); a.click(); a.remove();
+          URL.revokeObjectURL(url);
+          await new Promise(function(r) { setTimeout(r, 200); }); // small delay between downloads
+        }
+
+        var msg = '✅ ' + outputFiles.length + ' file(s) downloaded successfully!';
+        if (errors.length) msg += '\n\n⚠️ Failed:\n' + errors.join('\n');
+        alert(msg);
+        resetNupUI();
+
+      } catch(error) {
+        alert(error.message + '\n\nSomething went wrong.');
+        resetNupUI();
+      }
+    }
+
+    function resetNupUI() {
+      nupFiles = [];
+      document.getElementById('progress-overlay').style.display = 'none';
+      document.getElementById('upload-form').style.display = 'block';
+      document.getElementById('nup-drop-wrap').style.display = 'block';
+      document.getElementById('nup-list-wrap').style.display = 'none';
+      document.getElementById('nup-file-list').innerHTML = '';
+      document.getElementById('file-input').value = '';
+      var bar   = document.getElementById('spinner-bar');
+      var pctEl = document.getElementById('spinner-pct');
+      if (bar)   bar.style.strokeDashoffset = 314;
+      if (pctEl) pctEl.textContent = '0%';
+    }
+
+
+    /* ═══════════════════════════════════════════
+       MERGE TOOL
+       ═══════════════════════════════════════════ */
+    var mergeFiles   = [];   // Array of File objects
+    var dragSrcIdx   = null; // drag-to-reorder state
+
+    // drop zone for initial upload
+    var mergeDz = document.getElementById('merge-drop-zone');
+    var mergeFi = document.getElementById('merge-file-input');
+
+    mergeDz.addEventListener('dragover', function(e) { e.preventDefault(); mergeDz.classList.add('dragover'); });
+    mergeDz.addEventListener('dragleave', function() { mergeDz.classList.remove('dragover'); });
+    mergeDz.addEventListener('drop', function(e) {
+      e.preventDefault();
+      mergeDz.classList.remove('dragover');
+      if (e.dataTransfer.files.length) addMergeFiles(e.dataTransfer.files);
+    });
+    mergeFi.addEventListener('change', function() {
+      if (mergeFi.files.length) { addMergeFiles(mergeFi.files); mergeFi.value = ''; }
+    });
+
+    // "add more" button
+    document.getElementById('merge-add-input').addEventListener('change', function(e) {
+      if (e.target.files.length) { addMergeFiles(e.target.files); e.target.value = ''; }
+    });
+
+    function addMergeFiles(fileList) {
+      var added = 0;
+      for (var i = 0; i < fileList.length; i++) {
+        var f = fileList[i];
+        if (!f.name.toLowerCase().endsWith('.pdf')) { alert(f.name + ' is not a PDF — skipped.'); continue; }
+        if (f.size > MAX_FILE_SIZE) { alert(f.name + ' exceeds 30MB — skipped.'); continue; }
+        mergeFiles.push(f);
+        added++;
+      }
+      if (added > 0) renderMergeList();
+    }
+
+    function renderMergeList() {
+      var listEl = document.getElementById('merge-file-list');
+      var wrap   = document.getElementById('merge-list-wrap');
+      var dzWrap = document.getElementById('merge-drop-wrap');
+      var sumEl  = document.getElementById('merge-summary');
+
+      if (mergeFiles.length === 0) {
+        wrap.style.display  = 'none';
+        dzWrap.style.display = 'block';
+        return;
+      }
+
+      dzWrap.style.display = 'none';
+      wrap.style.display   = 'block';
+
+      var totalPages = mergeFiles.length + ' file' + (mergeFiles.length !== 1 ? 's' : '');
+      sumEl.textContent = totalPages + ' — drag to reorder';
+
+      listEl.innerHTML = '';
+      mergeFiles.forEach(function(f, idx) {
+        var card = document.createElement('div');
+        card.className     = 'merge-file-card';
+        card.draggable     = true;
+        card.dataset.index = idx;
+
+        var sizeStr = f.size < 1024 * 1024
+          ? (f.size / 1024).toFixed(0) + ' KB'
+          : (f.size / (1024 * 1024)).toFixed(1) + ' MB';
+
+        card.innerHTML =
+          '<span class="drag-handle" title="Drag to reorder">⠿</span>' +
+          '<span class="merge-file-num">' + (idx + 1) + '</span>' +
+          '<span class="merge-file-name" title="' + escHtml(f.name) + '">' + escHtml(f.name) + '</span>' +
+          '<span class="merge-file-size">' + sizeStr + '</span>' +
+          '<button class="merge-file-remove" title="Remove" onclick="removeMergeFile(' + idx + ')">✕</button>';
+
+        card.addEventListener('dragstart', function(e) {
+          dragSrcIdx = idx;
+          setTimeout(function() { card.classList.add('dragging'); }, 0);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        card.addEventListener('dragend', function() { card.classList.remove('dragging'); });
+        card.addEventListener('dragover', function(e) { e.preventDefault(); card.classList.add('drag-over'); });
+        card.addEventListener('dragleave', function() { card.classList.remove('drag-over'); });
+        card.addEventListener('drop', function(e) {
+          e.preventDefault();
+          card.classList.remove('drag-over');
+          if (dragSrcIdx === null || dragSrcIdx === idx) return;
+          var moved = mergeFiles.splice(dragSrcIdx, 1)[0];
+          mergeFiles.splice(idx, 0, moved);
+          dragSrcIdx = null;
+          renderMergeList();
+        });
+
+        listEl.appendChild(card);
+      });
+    }
+
+    function removeMergeFile(idx) {
+      mergeFiles.splice(idx, 1);
+      renderMergeList();
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function startMerge() {
+      if (mergeFiles.length < 2) { alert('Please add at least 2 PDF files to merge.'); return; }
+
+      document.getElementById('merge-list-wrap').style.display = 'none';
+      var prog = document.getElementById('merge-progress');
+      prog.style.display = 'flex';
+
+      var bar    = document.getElementById('merge-spinner-bar');
+      var pctEl  = document.getElementById('merge-spinner-pct');
+      var stepEl = document.getElementById('merge-progress-step');
+
+      function setMergePct(p, label) {
+        bar.style.strokeDashoffset = 314 - (p / 100) * 314;
+        pctEl.textContent = Math.round(p) + '%';
+        if (label) stepEl.textContent = label;
+      }
+
+      try {
+        if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+          throw new Error('PDF library failed to load.');
+        }
+
+        var { PDFDocument } = PDFLib;
+        var outPdf  = await PDFDocument.create();
+        var total   = mergeFiles.length;
+
+        for (var i = 0; i < total; i++) {
+          setMergePct((i / total) * 90, 'Loading ' + (i + 1) + ' of ' + total + '…');
+          var bytes  = await mergeFiles[i].arrayBuffer();
+          var srcPdf;
+          try { srcPdf = await PDFDocument.load(bytes); }
+          catch(e) { throw new Error(mergeFiles[i].name + ' could not be read (invalid or protected).'); }
+          var indices = srcPdf.getPageIndices();
+          var copied  = await outPdf.copyPages(srcPdf, indices);
+          copied.forEach(function(p) { outPdf.addPage(p); });
+        }
+
+        setMergePct(95, 'Saving merged PDF…');
+        var outputBytes = await outPdf.save();
+        setMergePct(100, 'Done!');
+
+        prog.style.display = 'none';
+        await showPreview(outputBytes, 'Merged (lowcostpdf.xyz).pdf', resetMergeUI);
+
+      } catch(error) {
+        alert(error.message + '\n\nMerge failed. Please check your files.');
+        resetMergeUI();
+      }
+    }
+
+    function resetMergeUI() {
+      mergeFiles = [];
+      document.getElementById('merge-progress').style.display  = 'none';
+      document.getElementById('merge-list-wrap').style.display = 'none';
+      document.getElementById('merge-drop-wrap').style.display = 'block';
+      document.getElementById('merge-spinner-bar').style.strokeDashoffset = 314;
+      document.getElementById('merge-spinner-pct').textContent = '0%';
+    }
+
+
+    /* ═══════════════════════════════════════════
+       GRAYSCALE TOOL
+       ═══════════════════════════════════════════ */
+    var gsFile  = null;
+    var gsScale = 1.5;
+    var GS_MAX_PAGES = 40;
+
+    var gsDz = document.getElementById('gs-drop-zone');
+    var gsFi = document.getElementById('gs-file-input');
+
+    gsDz.addEventListener('dragover', function(e) { e.preventDefault(); gsDz.classList.add('dragover'); });
+    gsDz.addEventListener('dragleave', function() { gsDz.classList.remove('dragover'); });
+    gsDz.addEventListener('drop', function(e) {
+      e.preventDefault();
+      gsDz.classList.remove('dragover');
+      if (e.dataTransfer.files.length) setGsFile(e.dataTransfer.files[0]);
+    });
+    gsFi.addEventListener('change', function() {
+      if (gsFi.files.length) { setGsFile(gsFi.files[0]); gsFi.value = ''; }
+    });
+
+    function setGsFile(file) {
+      if (!file.name.toLowerCase().endsWith('.pdf')) { alert('Only PDF files are supported.'); return; }
+      if (file.size > MAX_FILE_SIZE) { alert('File too large. Maximum allowed size is 30MB.'); return; }
+      gsFile = file;
+      document.getElementById('gs-file-name').textContent = file.name;
+      document.getElementById('gs-file-selected').style.display = 'flex';
+    }
+
+    function setGsScale(scale, btn) {
+      gsScale = scale;
+      document.querySelectorAll('.gs-qual-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    async function startGrayscale() {
+      if (!gsFile) { alert('Please select a PDF file first.'); return; }
+      if (typeof pdfjsLib === 'undefined') { alert('PDF rendering library (pdf.js) failed to load. Please check your internet connection.'); return; }
+
+      document.getElementById('gs-form').style.display = 'none';
+      var prog = document.getElementById('gs-progress');
+      prog.style.display = 'flex';
+
+      var bar    = document.getElementById('gs-spinner-bar');
+      var pctEl  = document.getElementById('gs-spinner-pct');
+      var stepEl = document.getElementById('gs-progress-step');
+
+      function setGsPct(p, label) {
+        bar.style.strokeDashoffset = 314 - (p / 100) * 314;
+        pctEl.textContent = Math.round(p) + '%';
+        if (label) stepEl.textContent = label;
+      }
+
+      try {
+        if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+          throw new Error('PDF library failed to load.');
+        }
+
+        var { PDFDocument } = PDFLib;
+        var inputBytes = await gsFile.arrayBuffer();
+
+        setGsPct(5, 'Loading PDF…');
+        var loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(inputBytes) });
+        var pdfDoc      = await loadingTask.promise;
+        var numPages    = pdfDoc.numPages;
+
+        if (numPages > GS_MAX_PAGES) {
+          throw new Error('This PDF has ' + numPages + ' pages. Maximum for grayscale is ' + GS_MAX_PAGES + ' pages.');
+        }
+
+        var outPdf = await PDFDocument.create();
+
+        for (var i = 1; i <= numPages; i++) {
+          var pct = 10 + ((i - 1) / numPages) * 85;
+          setGsPct(pct, 'Converting page ' + i + ' of ' + numPages + '…');
+
+          // yield to browser between pages so progress updates render
+          await new Promise(function(r) { setTimeout(r, 0); });
+
+          var page     = await pdfDoc.getPage(i);
+          var natural  = page.getViewport({ scale: 1 });
+          var viewport = page.getViewport({ scale: gsScale });
+
+          var canvas  = document.createElement('canvas');
+          canvas.width  = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+          var ctx = canvas.getContext('2d');
+
+          // white background (JPEG has no alpha)
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+          // pixel-level grayscale conversion (luminance-preserving)
+          var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          var data    = imgData.data;
+          for (var px = 0; px < data.length; px += 4) {
+            var gray = Math.round(0.299 * data[px] + 0.587 * data[px+1] + 0.114 * data[px+2]);
+            data[px] = data[px+1] = data[px+2] = gray;
+          }
+          ctx.putImageData(imgData, 0, 0);
+
+          // encode to JPEG
+          var jpegB64  = canvas.toDataURL('image/jpeg', 0.90).split(',')[1];
+          var jpegBin  = atob(jpegB64);
+          var jpegBytes = new Uint8Array(jpegBin.length);
+          for (var b = 0; b < jpegBin.length; b++) jpegBytes[b] = jpegBin.charCodeAt(b);
+
+          var jpegImg   = await outPdf.embedJpg(jpegBytes);
+          var outPage   = outPdf.addPage([natural.width, natural.height]);
+          outPage.drawImage(jpegImg, { x: 0, y: 0, width: natural.width, height: natural.height });
+        }
+
+        setGsPct(98, 'Saving grayscale PDF…');
+        var outputBytes = await outPdf.save();
+        setGsPct(100, 'Done!');
+
+        prog.style.display = 'none';
+        var outName = gsFile.name.replace(/\.pdf$/i, '') + ' (lowcostpdf.xyz).pdf';
+        await showPreview(outputBytes, outName, resetGsUI);
+
+      } catch(error) {
+        alert(error.message + '\n\nGrayscale conversion failed.');
+        resetGsUI();
+      }
+    }
+
+    function resetGsUI() {
+      gsFile = null;
+      document.getElementById('gs-progress').style.display = 'none';
+      document.getElementById('gs-form').style.display = 'block';
+      document.getElementById('gs-file-selected').style.display = 'none';
+      document.getElementById('gs-file-input').value = '';
+      document.getElementById('gs-spinner-bar').style.strokeDashoffset = 314;
+      document.getElementById('gs-spinner-pct').textContent = '0%';
+    }
+
+
+    /* ═══════════════════════════════════════════
+       INIT
+       ═══════════════════════════════════════════ */
+    initDarkMode();
+  </script>
+
+</body>
+</html>
